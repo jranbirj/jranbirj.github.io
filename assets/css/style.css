@@ -258,6 +258,7 @@
   .divider-beg {
     border: none;
     height: 5px;
+    -webkit-appearance: none;
     background: linear-gradient(to right, #003865, #22a2c9);
     margin: 1rem 0;
   }
@@ -265,6 +266,7 @@
   .divider-end {
     border: none;
     height: 5px;
+    -webkit-appearance: none;
     background: linear-gradient(to right, #22a2c9, #003865);
     margin: 1rem 0;
   }
