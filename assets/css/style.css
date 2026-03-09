@@ -254,4 +254,26 @@
     font-size: 0.85rem;
     color: var(--muted);
   }
+
+  .divider-beg {
+    border: none;
+    height: 5px;
+    background: linear-gradient(to right, #003865, #22a2c9);
+    margin: 1rem 0;
+  }
+  
+  .divider-end {
+    border: none;
+    height: 5px;
+    background: linear-gradient(to right, #22a2c9, #003865);
+    margin: 1rem 0;
+  }
+
+  body.dark .divider-beg {
+    background: linear-gradient(to right, #d97706, #facc15);
+  }
+
+  body.dark .divider-end {
+    background: linear-gradient(to right, #facc15, #d97706);
+  }
   
