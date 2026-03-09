@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tools for Thinking — Ranbir Jain</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link id="prism-theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism-themes/1.9.0/prism-base16-ateliersulphurpool.light.min.css" />
+</head>
+
+<body>
+
+  <div class="container">
+
+    <nav>
+      <a href="../index.html">Home</a>
+      <a href="../research.html">Research</a>
+      <a href="../projects.html">Projects</a>
+      <a href="../writing.html">Writing</a>
+      <button id="theme-toggle" class="theme-btn" aria-label="Toggle theme">
+        ☾
+      </button>
+    </nav>
+
+    <article>
+      <header>
+        <h1>Bias in Abstract Spaces: Exploring Social Stereotypes in Word Embeddings</h1>
+        <p class="post-meta">March 8, 2026</p>
+      </header>
+
+      <section class="post-content">    
+        <hr>
+        <p>Word embeddings are used for representing words as dense vectors in a continuous space, encoding semantic, geometric relationships. These embeddings enable us to perform powerful vector arithmetic and find similar words in a space. However, massive corpora of human-generated text is used in training, meaning that embeddings inherit the assumption, patterns, and biases that are present within the data.</p>
+        <p>My portfolio piece looks at GloVe embeddings to investigate what social stereotypes are encoded in a widely-used pretrained model, focusing on the dimensions of <strong>gender</strong>, <strong>nationality</strong>, and <strong>religion</strong>. As one goes through the notebook, one can explore what embeddings can and can't capture (and their implications for real-world NLP systems).</p>
+        <p><strong>Research questions:</strong></p>
+        <ol>
+          <li>What do word embeddings encode about gender and professional roles, and how does this bias manifest both directionally and through omission?</li>
+          <li>Do nationality embeddings reflect cultural stereotypes, or do they reveal something more about corpus composition?</li>
+          <li>How is religious identity encoded in embedding space?</li>
+        </ol>
+
+        <hr>
+        <h2>Model Choice</h2>
+        <p> In this case, I used gensim for convenient access to pretrained embeddings. 
+          Why did I pick GloVe? GloVe learns embeddings by factorizing a global word co-occurrence matrix, 
+          which means that it is able to capture statistical structure across an entire corpus. 
+          It's effective at encoding both local syntactic and broader semantic relationships as compared to window-based methods like skip-gram that only see local context.</p>
+          
+          <div class="nb-cell">
+            <div class="nb-cell-label">In [1]:</div>
+            <pre><code class="language-python">print(api.info()["models"].keys())</code></pre>
+            <div class="nb-output">dict_keys(['fasttext-wiki-news-subwords-300', 'conceptnet-numberbatch-17-06-300',
+              'word2vec-google-news-300', 'glove-wiki-gigaword-50', 'glove-wiki-gigaword-100',
+              'glove-wiki-gigaword-200', 'glove-wiki-gigaword-300', 'glove-twitter-25', ...])</div>
+          </div>
+          
+          <p>I used the glove-wiki-gigaword-300 model, trained on Wikipedia + Gigaword with a 400,000-word vocabulary and 300-dimensional vectors. 
+            I chose the 300-dimensional variant in order to have richer geometric structure and nuance, important when measuring directions for bias analysis.</p>
+          
+          <div class="nb-cell">
+            <div class="nb-cell-label">In [2]:</div>
+            <pre><code class="language-python"># Decided to work with the Glove model
+print("Loading pre-trained embeddings...")
+model = api.load('glove-wiki-gigaword-300')
+print(f"Loaded! Vocabulary size: {len(model)} words")
+print(f"Each word is represented by a vector of {model.vector_size} numbers")</code></pre>
+            <div class="nb-output">Loading pre-trained embeddings...
+[==================================================] 100.0% 376.1/376.1MB downloaded
+Loaded! Vocabulary size: 400000 words
+Each word is represented by a vector of 300 numbers</div>
+          </div>
+        
+          <hr>
+          <h2>Part 1: What Embeddings Can Do &mdash; Analogies and Similarity</h2>
+          <p> Before investigating bias, it's important to understand some of the ways in which embeddings are useful.<br><br>
+            One way we can use embedding is for vector arithmetic (and coming up with analogies). Embeddings can encode semantic relationships in the form of direction, which means we can manipulate those directions. We can create a "gender" direction for instance, that allows us to transform a male-coded word to its female counterpart.<br><br>
+            Another way to use it would be for cosine similarity, where we measure the angle between two vectors to determine proximity / semantic similarity. </p>
+
+          <p>Looking at the analogies, we notice that:</p>
+          <ul>
+            <li><code>king − man + woman = queen</code> works well (~0.67), confirming that gender is encoded as a consistent direction in the space, which creates the foundational assumption for investigating bias.</li>
+            <li><code>mango − fruit + apple</code> is included as an example for understanding static embeddings, which we covered in DS593. In this case, many results are Apple products (iPhone, iPod, etc.), meaning that <code>apple</code> conflates the fruit and the brand into a single vector. Models inheriting this embedding will carry similar conflation. This also matters for bias, because neutral words (for instance, job professions) absorb gendered associations from every context they appear in the corpus, which means it might not be possible to separate from a gendered use from a neutral one.</li>
+            <li><code>brilliant - man + woman</code> yields dazzling, superb, beautiful, and gorgeous. The model's female analogue of intellectual brilliance returns physical attractiveness traits instead, which reflects how these qualities are discussed in the training text (and a preview to deeper bias analysis in later cells).</li>
+          </ul>
+          <p>The overall takeaway here is that vector arithmetic is powerful, but not without corpus biases baked into the embedding space.</p>
+        
+          <div class="nb-cell">
+            <div class="nb-cell-label">In [3]:</div>
+            <pre><code class="language-python"># interesting analogies
+print(model.most_similar(positive=["king", "woman"], negative=["man"]))
+print(model.most_similar(positive=["mango", "apple"], negative=["fruit"]))
+print(model.most_similar(positive=["brilliant", "woman"], negative=["man"]))</code></pre>
+            <div class="nb-output">[('queen', 0.6713276505470276), ('princess', 0.5432624220848083), ('throne', 0.5386104583740234), ('monarch', 0.5347574949264526), ('daughter', 0.49802514910697937), ('mother', 0.49564430117607117), ('elizabeth', 0.4832652509212494), ('kingdom', 0.47747090458869934), ('prince', 0.4668239951133728), ('wife', 0.46473273634910583)]<br>
+[('iphone', 0.4845311939716339), ('ipod', 0.47242119908332825), ('macintosh', 0.4683038890361786), ('ipad', 0.46628710627555847), ('itunes', 0.42095181345939636), ('intel', 0.4166505038738251), ('ibm', 0.41645556688308716), ('imac', 0.4148423373699188), ('chutney', 0.41169652342796326), ('pineapple', 0.4060114026069641)]<br>
+[('dazzling', 0.5670727491378784), ('superb', 0.5030891299247742), ('beautiful', 0.49297866225242615), ('gorgeous', 0.46522030234336853), ('bright', 0.4560376703739166), ('lovely', 0.44476720690727234), ('stunning', 0.44291386008262634), ('wonderful', 0.44155165553092957), ('brilliantly', 0.4347189962863922), ('gutsy', 0.4333743751049042)]</div>
+</div>
+
+          <p>Even with cosine similarity alone before formal bias investigation, we can see some bias patterns in the word pairs. Nurse is strongly closer to woman than man, while engineer sits closer to man than woman. Brilliant closely aligns with man, which only validates what we saw in the analogies section above. 
+            These gaps are consistent across multiple words, which indicates a systemic pattern rather than pure noise.<br><br>
+            In Part 2, I've formalized this more by using a directional projection of gender with relation to profession.</p>          
+
+        <div class="nb-cell">
+          <div class="nb-cell-label">In [4]:</div>
+          <pre><code class="language-python"># similarity comparisons
+print(model.similarity("nurse", "woman"))
+print(model.similarity("nurse", "man"))
+print(model.similarity("engineer", "woman"))
+print(model.similarity("engineer", "man"))
+print(model.similarity("brilliant", "woman"))
+print(model.similarity("brilliant", "man"))</code></pre>
+          <div class="nb-output">0.44963568
+0.23730029
+0.20360065
+0.2874907
+0.22784068
+0.30332452
+</div>
+        </div>
+
+        <hr>
+        <h2>Part 2: Bias in Embeddings — Gender and Profession</h2>
+        <p>A key finding in NLP (Bolukbasi et al., 2016, <em>"Man is to Computer Programmer as Woman is to Homemaker?"</em>) showed that word embeddings encode real-world gender stereotypes.</p>
+        <p>I decided to look further into this by projecting each profession word onto a gender direction vector defined as <code>woman − man</code>. A positive score is more associated with <code>woman</code>, while a negative one is more associated with <code>man</code>. The magnitude reflects the strength of association.</p>
+
+        <div class="nb-cell">
+          <div class="nb-cell-label">In [5]:</div>
+          <pre><code class="language-python"># investigation of bias
+# Starting with an investigation into gender and professions.
+gender_vec = model["woman"] - model["man"]
+
+def sc_bias(word):
+  return np.dot(model[word], gender_vec)
+
+professions = [
+    "engineer", "nurse", "scientist", "teacher",
+    "programmer", "homemaker", "doctor", "assistant",
+    "lawyer", "accountant", "professor", "officer"
+]
+
+for word in professions:
+    print(word, sc_bias(word))</code></pre>
+          <div class="nb-output">engineer -2.6637976
+nurse 8.855267
+scientist 0.33253732
+teacher 5.690981
+programmer -1.0347011
+homemaker 8.1253395
+doctor 3.8386226
+assistant 0.8062988
+lawyer 1.3571208
+accountant 1.2602606
+professor 1.1364384
+officer -0.84859467
+</div>
+        </div>
+
+        <p>The results indicate that the professions engineer, programmer, and officers lean strongly male, while nurse, teacher, homemaker, and doctor lean strongly female. Other occupations are fairly midway or mildly female-leaning.</p>
+<p>What's even more interesting are the magnitudes behind those indications. Nurse and homemaker are both over 8+, while the strongest magnitude that is male-coded is around -2.7. It's very much possible that female-coded occupations are encoded far more strongly than male-coded ones (in the sense that the training corpus may often have "female nurse", or basically more gender marking than males).</p>
+<p>The scores don't reflect reality in the sense that they aren't based on the actual gender distribution of the professions. The scores are instead <em>measuring the language used to describe reality</em>, which is not the same thing. This insight is important because any real-world facing application that uses these embeddings could systematically disadvantage applicants.</p>
+<p>Instances could be a resume screening system like Amazon's 2014-2017 job screening system, or even in translation, when Google Translate used to encode gender bias when translating from gender-neutral languages like Hungarian and Turkish to English (covered in detail in <em>Prates, M. et al. (2019). Assessing gender bias in machine translation. AI &amp; Society</em>).</p>
+<p>Below, I have added a plot to really visualize what the differences in magnitude really entail.</p>
+
+        <div class="nb-cell">
+          <div class="nb-cell-label">In [6]:</div>
+          <pre><code class="language-python"># Gender bias by profession plot
+
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+
+scores = [sc_bias(word) for word in professions]
+sorted_pairs = sorted(zip(scores, professions), key=lambda x: x[0])
+sorted_scores, sorted_professions = zip(*sorted_pairs)
+colors = ['navy' if s < 0 else 'maroon' for s in sorted_scores]
+
+fig, ax = plt.subplots(figsize=(10, 6))
+ax.barh(sorted_professions, sorted_scores, color=colors)
+ax.axvline(x=0, color='black', linewidth=0.8, linestyle='--')
+ax.set_xlabel('Gender Bias Score (negative = male-leaning, positive = female-leaning)', fontsize=11)
+ax.set_title('Gender Bias in GloVe Embeddings: Profession Words\n(projection onto woman − man direction)', fontsize=12)
+
+male_patch = mpatches.Patch(color='navy', label='Male-leaning')
+female_patch = mpatches.Patch(color='maroon', label='Female-leaning')
+ax.legend(handles=[male_patch, female_patch], loc='lower right')
+
+plt.tight_layout()
+plt.show()</code></pre>
+          <div class="nb-output" style="background-color: white;"><img src="../assets/images/bp1/bp1-gbchart.png" alt="Gender Bias by Profession Chart" /></div>
+        </div>
+
+        <p>Interestingly, nonbinary doesn't even exist in the GloVe vocabulary (probably was not in training corpus). This is a slightly different form of bias than the ones which were encoded, but it's bias nonetheless. In this case, the embeddings suffer from bias by omission.</p>
+        <p>The embedding space cannot represent identities outside the gender binary, reflecting the absence of such voices in the Wikipedia/Gigaword training corpus. Arguably, this could be more insidious than directional bias because the model "erases" non-binary identities.</p>
+
+        <div class="nb-cell">
+          <div class="nb-cell-label">In [7]:</div>
+          <pre><code class="language-python">"nonbinary" in model.key_to_index
+"non-binary" in model.key_to_index</code></pre>
+          <div class="nb-output">False
+</div>
+        </div>
+
+        <hr>
+        <h2>Part 3: Nationality Associations</h2>
+        <p>Shifting from gender to nationality, I wanted to see what associations does embedding geometry encode around national identities. Using cosine similarity, I first tested with a single word (<code>"intelligent"</code>) between nationality and intelligence.</p>
+        <p>Most of the nationalities had an intelligence score close to zero, although the corpus may have had more about americans with relation to contexts of intelligence. It is possible that the model was encoding those uneven frequency patterns. It may not necessarily indicate that one group is the "most" intelligent with heavy magnitude, but it is interesting to see the variances in the magnitude. Single-probe scores (<code>"intelligent"</code>) show wider variance — <code>nigerian</code> sits noticeably lower than others, while <code>american</code> and <code>chinese</code> score highest.</p>
+
+        <div class="nb-cell">
+          <div class="nb-cell-label">In [8]:</div>
+          <pre><code class="language-python"># Now looking at nationality and intelligence
+
+nationalities = [
+    &quot;american&quot;, &quot;japanese&quot;, &quot;german&quot;, &quot;nigerian&quot;, &quot;indian&quot;,
+    &quot;brazilian&quot;, &quot;korean&quot;, &quot;russian&quot;, &quot;egyptian&quot;, &quot;chinese&quot;
+]
+
+for nationality in nationalities:
+    print(f&quot;{nationality}:&quot;, model.similarity(&quot;intelligent&quot;, nationality))</code></pre>
+          <div class="nb-output">american: 0.114259526
+japanese: 0.10445022
+german: 0.07724562
+nigerian: 0.012579111
+indian: 0.042789917
+brazilian: 0.039575983
+korean: 0.03714066
+russian: 0.065346375
+egyptian: 0.050300583
+chinese: 0.105084896</div>
+        </div>
+        
+        <p> Upon averaging across multiple traits / words related to intelligence, the results are much more robust. The choice of multi-trait averaging smooths out noise, and the nationalities are in a much closer range than before.</p>
+        <p> Even with averaging, it does seem that western and East Asian nationalities trend slightly higher, which could reflect how the English-language training corpus discusses these regions when it comes to technology, economy, and innovation versus others.</p>
+
+        <div class="nb-cell">
+          <div class="nb-cell-label">In [9]:</div>
+          <pre><code class="language-python">traits = [&quot;intelligent&quot;, &quot;educated&quot;, &quot;skilled&quot;, &quot;innovative&quot;]
+
+for nationality in nationalities:
+    avg = np.mean([model.similarity(trait, nationality) for trait in traits])
+    print(nationality, avg)</code></pre>
+          <div class="nb-output">american 0.13974756
+japanese 0.11576784
+german 0.111090206
+nigerian 0.060168095
+indian 0.1112738
+brazilian 0.059922405
+korean 0.07940572
+russian 0.10221154
+egyptian 0.06546549
+chinese 0.16766365</div>
+        </div>
+        
+        <p>Here's where the exploration with nationalities starts to get a bit interesting. When testing with negative words, American, Chinese, and Indian/Russian score high on dangerous, corrupt, violent, and criminal while German scores the lowest. 
+          If the model was encoding common stereotypes, one may expect a different ordering. Embeddings are not straightaway encoding cultural prejudices; the pattern is much more messier and is more reflective about what's written in English language text.</p>
+
+          <div class="nb-cell">
+            <div class="nb-cell-label">In [10]:</div>
+            <pre><code class="language-python">negative_traits = [&quot;dangerous&quot;, &quot;corrupt&quot;, &quot;violent&quot;, &quot;criminal&quot;]
+print(&quot;Negative traits (averaged):&quot;)
+neg_scores = [(np.mean([model.similarity(t, nat) for t in negative_traits]), nat) for nat in nationalities]
+for score, nat in sorted(neg_scores, reverse=True):
+    print(f&quot;  {nat}: {score:.4f}&quot;)</code></pre>
+            <div class="nb-output">Negative traits (averaged):
+american: 0.1812
+chinese: 0.1780
+indian: 0.1670
+russian: 0.1636
+nigerian: 0.1561
+korean: 0.1408
+egyptian: 0.1383
+japanese: 0.1106
+brazilian: 0.1051
+german: 0.0975</div>
+          </div>
+        
+          <p>Perhaps the most interesting part of the nationality exploration is testing more "charged" single trait words beyond intelligence. The heatmap makes several patterns immediately visible.</p>
+<p>The immediate thing that jumps out is the "American" problem, where <code>american</code> nearly tops every category across positive and negative traits. This likely reflects how frequently Americans are discussed in the training corpus across all kinds of contexts rather than any meaningful semantic association. In positive traits, the only exception is innovative, where Chinese edges ahead.</p>
+<p>The most striking single cell is Nigerian scoring highest on corrupt (0.210), which is the darkest cell in the entire heatmap. Unlike the case with the corpus frequency for American, this might be harder to explain away and could directly reflect more negative associations encoded in the training text.</p>
+<p>Weirdly, German scores negative "hardworking" section despite Germany's overall reputation for efficiency. The corpus may not be discussing German and hardworking in terms of individual work ethic as much as in political or historical contexts.</p>
+<p>Finally, Korean scores are consistently low across positive traits, which could likely reflects the corpus being lopsided with North Korea coverage (embroiled in conflict, sanctions, poverty, authoritarianism). In this case, harm might not be due to stereotypes, but rather due to the stories dominating the training data and the single vector not being able to distinguish between two very different geopolitical contexts.</p>
+<p>One major note to remember is that single-probing traits show more variance and that these scores reflect corpus patterns. The model is simply a mirror of its training data.</p>
+
+<div class="nb-cell">
+  <div class="nb-cell-label">In [11]:</div>
+  <pre><code class="language-python">import seaborn as sns
+import pandas as pd
+
+all_traits = ["educated", "wealthy", "innovative", "hardworking", "intelligent",
+              "dangerous", "corrupt", "violent"]
+data = {}
+for trait in all_traits:
+    data[trait] = [model.similarity(trait, nat) for nat in nationalities]
+
+df = pd.DataFrame(data, index=nationalities)
+
+positive_traits = ["educated", "wealthy", "innovative", "hardworking", "intelligent"]
+df = df.loc[df[positive_traits].mean(axis=1).sort_values(ascending=False).index]
+
+fig, ax = plt.subplots(figsize=(12, 7))
+sns.heatmap(df, annot=True, fmt=".3f", cmap="RdBu_r", center=0,
+            linewidths=0.5, ax=ax, cbar_kws={"label": "Cosine Similarity"})
+
+ax.set_title("Nationality Associations Across Traits (GloVe-300)\n"
+              "Left: positive traits | Right: negative traits", fontsize=12)
+ax.set_xlabel("Trait", fontsize=11)
+ax.set_ylabel("Nationality", fontsize=11)
+ax.axvline(x=5, color='black', linewidth=2)
+
+plt.tight_layout()
+plt.show()</code></pre>
+<div class="nb-output" style="background-color: white;"><img src="../assets/images/bp1/bp1-nat-trait-assoc.png" alt="Nationality Associations Across Traits Chart" /></div>
+</div>
+
+        <hr>
+        <h2>Part 4: Religion-Based Bias</h2>
+<p>The final aspect I wanted to look at was religion-based bias in word embeddings. Religion tends to be a fairly contentious topic (as well as how religion is reported). I wanted to see how religious identity is encoded in embedding spaces and their connotations with positive/negative traits, which could give an idea of the bias baked in the training corpora.</p>
+<p>The results that came out from running model similarity showed a striking and uneven distribution of associations across religions. The most significant finding is muslim, which scores highest on radical (0.4295), terrorist (0.3606), and violent (0.3540) by margins that exceed other religions. This isn't a subtle statistical difference, the gap is very large enough that it could have a substantial influence in downstream applications. Those scores start to hit moderate association territory.</p>
+<p>What makes this even more complex is that muslim also scores the highest on peaceful, tolerant, and educated. There seems to be a dual nature of how Islam is discussed in the corpora. The embedding absorbs both and collapses them into a single vector, which results in it being unable to separate context (once again, a static embedding problem re-arises).</p>
+<p>Buddhist sits at the opposite end, scoring low to zero on all negative traits (with dangerous going slightly negative). There could be a "peaceful" stereotype associated with buddhism that's encoded in the geometrical representations.</p>
+<p>Christian scores highest on morality (0.303), which is also quite moderate and could reflect references of Christianity in english language text. Atheism scores last on the peaceful section with a score close to zero (0.0082), which seems slightly peculiar.</p>
+<p>The implications here are significant, because an NLP system performing some form of sentiment analysis, content moderation, or entity classification tasks using these embeddings could bake in negative stereotypes (say, flagging Muslim-related content as higher risk not because of the content itself, but because of how the training corpus discussed Islam).</p>
+
+<div class="nb-cell">
+  <div class="nb-cell-label">In [12]:</div>
+  <pre><code class="language-python">religions = [&quot;christian&quot;, &quot;muslim&quot;, &quot;jewish&quot;, &quot;buddhist&quot;, &quot;hindu&quot;, &quot;atheist&quot;]
+
+positive = [&quot;peaceful&quot;, &quot;tolerant&quot;, &quot;educated&quot;, &quot;moral&quot;, &quot;charitable&quot;]
+negative = [&quot;violent&quot;, &quot;dangerous&quot;, &quot;extreme&quot;, &quot;radical&quot;, &quot;terrorist&quot;]
+
+print(&quot;POSITIVE TRAITS&quot;)
+pos_data = {}
+for trait in positive:
+    scores = [(model.similarity(trait, rel), rel) for rel in religions]
+    pos_data[trait] = {rel: score for score, rel in scores}
+    print(f&quot;\n {trait}&quot;)
+    for score, rel in sorted(scores, reverse=True):
+        print(f&quot;  {rel}: {score:.4f}&quot;, end=&quot;  &quot;)
+
+
+print(&quot;\n\n\n NEGATIVE TRAITS&quot;)
+for trait in negative:
+    scores = [(model.similarity(trait, rel), rel) for rel in religions]
+    print(f&quot;\n {trait}&quot;)
+    for score, rel in sorted(scores, reverse=True):
+        print(f&quot;  {rel}: {score:.4f}&quot;, end=&quot;  &quot;)</code></pre>
+        <div class="nb-output">POSITIVE TRAITS
+
+peaceful
+  muslim: 0.2936    buddhist: 0.2491    hindu: 0.2196    jewish: 0.1974    christian: 0.1790    atheist: 0.0082  
+tolerant
+  muslim: 0.2099    christian: 0.1856    atheist: 0.1345    hindu: 0.1337    buddhist: 0.1264    jewish: 0.0939  
+educated
+  muslim: 0.2142    christian: 0.1856    jewish: 0.1661    buddhist: 0.1636    hindu: 0.1419    atheist: 0.0879  
+moral
+  christian: 0.3031    buddhist: 0.2331    muslim: 0.2085    jewish: 0.2043    atheist: 0.1901    hindu: 0.1825  
+charitable
+  jewish: 0.2300    christian: 0.2093    muslim: 0.2090    atheist: 0.1829    hindu: 0.1718    buddhist: 0.1716  
+
+
+NEGATIVE TRAITS
+
+violent
+  muslim: 0.3540    hindu: 0.2533    jewish: 0.2175    christian: 0.1678    buddhist: 0.1235    atheist: 0.0865  
+dangerous
+  muslim: 0.1896    jewish: 0.1058    christian: 0.0814    hindu: 0.0582    atheist: 0.0329    buddhist: -0.0214  
+extreme
+  christian: 0.1763    muslim: 0.1711    hindu: 0.1564    jewish: 0.1464    atheist: 0.0592    buddhist: 0.0384  
+radical
+  muslim: 0.4295    jewish: 0.2945    atheist: 0.2910    hindu: 0.2898    christian: 0.2889    buddhist: 0.2046  
+terrorist
+  muslim: 0.3606    jewish: 0.2514    atheist: 0.1518    hindu: 0.1512    christian: 0.0816    buddhist: 0.0669  </div>
+</div>
+
+        <hr>
+        <h2>Conclusion: Critical Analysis and Limitations</h2>
+<p>Across three dimensions of analysis, GloVe embeddings consistently encode social stereotypes present in their training corpus.</p>
+<p>With regards to <strong>Gender</strong>, Female-coded occupations (nurse, homemaker) are encoded with far stronger magnitude than male-coded ones, reflecting how gendered language is marked in English text. More strikingly, non-binary identities are absent from the vocabulary entirely (bias by omission rather than misrepresentation).</p>
+<p>In <strong>Nationality</strong>, the embedding space reflects corpus composition more than cultural reality. American tops nearly every category regardless of whether traits are positive or negative due to frequency. Korean scores low on education despite South Korea's high literacy rates, likely contaminated by North Korea coverage in the same vector. Nigerian scores highest on "corrupt", the one case where a stereotyped negative association could be appearing most directly.</p>
+<p><strong>Religion</strong> shows wide margins of bias and static embedding problems, with Muslim carrying the strongest associations with "radical", "violent", and "terrorist" while simultaneously topping peaceful and tolerant. The embedding might not be able to discourse and historical context, collapsing both into a single contradictory vector.</p>
+<h3>Limitations</h3>
+<table>
+<tr><th>Issue</th><th>Detail</th></tr>
+<tr><td>Probe sensitivity</td><td>Results are sensitive to which words we use as probes. Single-word probes should not be over-interpreted.</td></tr>
+<tr><td>Gender direction simplification</td><td><code>woman − man</code> assumes gender is a single linear direction, missing multidimensionality of gender identity.</td></tr>
+<tr><td>Single model</td><td>GloVe on Wikipedia/Gigaword is not representative of all text — Twitter or news corpora would likely produce different biases.</td></tr>
+<tr><td>Vocabulary gaps</td><td>The absence of "nonbinary" reflects whose voices were present in the training data at collection time.</td></tr>
+<tr><td>Correlation ≠ causation</td><td>Cosine similarity measures co-occurrence patterns, not causal associations. High similarity between "muslim" and "terrorist" does not mean the model "believes" this.</td></tr>
+<tr><td>Static embeddings</td><td>Some words like <code>apple</code> and <code>korean</code> have the same vector representations, but have different contexts in which they should be used. This can be addressed with attention and dynamic embeddings where the same word receives a different vector depending on context.</td></tr>
+</table>
+<h3>Implications</h3>
+<p>These findings are useful beyond academic interests. Embeddings are used in many real-world NLP systems, such as for resume screening, machine translation, sentiment analysis, and more. Some of the biases identified here have also affected those systems (documented examples).</p>
+<p>The main takeaway is that any model trained on human-generated text will encode human biases. For responsible deployment, it would be best to understand and address the biases exist, where they come from, ways to mitigate them during training, and how they affect applications forward.  </p>
+
+        <hr>
+      </section>
+
+      <a href="../writing.html" class="back-link">← Back to Writing</a>
+    </article>
+
+    <footer>
+      <p>© 2026 Ranbir Jain</p>
+    </footer>
+
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+  <script src="../assets/js/script.js"></script>
+</body>
+</html>
