@@ -418,3 +418,301 @@
     background: linear-gradient(to right, #facc15, #d97706);
   }
   
+  .timeline {
+    position: relative;
+    padding-left: 40px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--muted);
+    opacity: 0.4;
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 36px;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -39px;
+    transform: translateX(-50%);
+    top: 4px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #002e4e;
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 2px #2aabe8;
+  }
+
+  .timeline--education .timeline-item::before {
+    background: #622300;
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 2px #ff7809;
+  }
+
+  .timeline-date {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  .timeline-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 2px;
+  }
+
+  .timeline-subtitle {
+    font-size: 0.95rem;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .timeline-desc {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  body.dark .timeline-item::before {
+    background: #003865;
+    box-shadow: 0 0 0 2px #22a2c9;
+  }
+
+  body.dark .timeline--education .timeline-item::before {
+    background: #78350f;
+    box-shadow: 0 0 0 2px #f59e0b;
+  }
+
+  /* Skills section */
+  .skills {
+    margin-top: 8px;
+    margin-bottom: 48px;
+  }
+
+  .skill-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    margin-bottom: 16px;
+  }
+
+  .skill-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+    min-width: 90px;
+    padding-top: 5px;
+  }
+
+  .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .skill-tag {
+    font-size: 0.82rem;
+    padding: 4px 12px;
+    border-radius: 3px;
+    color: var(--text);
+    border: 1px solid;
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+
+  .skill-group:nth-child(1) .skill-tag {
+    background: rgba(0, 188, 212, 0.1);
+    border-color: rgba(0, 188, 212, 0.45);
+  }
+  .skill-group:nth-child(1) .skill-tag:hover {
+    background: rgba(0, 188, 212, 0.18);
+    border-color: rgba(0, 188, 212, 0.7);
+  }
+
+  .skill-group:nth-child(2) .skill-tag {
+    background: rgba(219, 39, 119, 0.1);
+    border-color: rgba(219, 39, 119, 0.45);
+  }
+  .skill-group:nth-child(2) .skill-tag:hover {
+    background: rgba(219, 39, 119, 0.18);
+    border-color: rgba(219, 39, 119, 0.7);
+  }
+
+  .skill-group:nth-child(3) .skill-tag {
+    background: rgba(234, 179, 8, 0.12);
+    border-color: rgba(234, 179, 8, 0.55);
+  }
+  .skill-group:nth-child(3) .skill-tag:hover {
+    background: rgba(234, 179, 8, 0.22);
+    border-color: rgba(234, 179, 8, 0.8);
+  }
+
+  .skill-group:nth-child(4) .skill-tag {
+    background: rgba(234, 88, 12, 0.1);
+    border-color: rgba(234, 88, 12, 0.45);
+  }
+  .skill-group:nth-child(4) .skill-tag:hover {
+    background: rgba(234, 88, 12, 0.18);
+    border-color: rgba(234, 88, 12, 0.7);
+  }
+
+  .skill-group:nth-child(5) .skill-tag {
+    background: rgba(139, 92, 246, 0.1);
+    border-color: rgba(139, 92, 246, 0.45);
+  }
+  .skill-group:nth-child(5) .skill-tag:hover {
+    background: rgba(139, 92, 246, 0.18);
+    border-color: rgba(139, 92, 246, 0.7);
+  }
+
+  /* Talks & Publications */
+  .talk-list {
+    margin-top: 8px;
+    margin-bottom: 48px;
+  }
+
+  .talk-item {
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+  }
+
+  .talk-item:first-child {
+    border-top: 1px solid rgba(128, 128, 128, 0.2);
+  }
+
+  .talk-meta {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  .talk-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .talk-authors {
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin-bottom: 3px;
+  }
+
+  .talk-venue {
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+
+  .talk-link {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .talk-link:hover {
+    text-decoration: underline;
+  }
+
+  /* Research tree */
+  .research-section {
+    margin-bottom: 48px;
+  }
+
+  .research-item {
+    margin-bottom: 40px;
+  }
+
+  .research-root {
+    border: 1px solid rgba(128, 128, 128, 0.25);
+    border-radius: 4px;
+    padding: 16px 24px;
+    text-align: center;
+  }
+
+  .research-title {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .tree-connector {
+    display: flex;
+    gap: 16px;
+    height: 32px;
+  }
+
+  .tree-arm--left {
+    flex: 1;
+    border-right: 2px solid rgba(128, 128, 128, 0.3);
+    border-bottom: 2px solid rgba(128, 128, 128, 0.3);
+    border-bottom-right-radius: 12px;
+  }
+
+  .tree-arm--right {
+    flex: 1;
+    border-left: 2px solid rgba(128, 128, 128, 0.3);
+    border-bottom: 2px solid rgba(128, 128, 128, 0.3);
+    border-bottom-left-radius: 12px;
+  }
+
+  .research-branches {
+    display: flex;
+    gap: 16px;
+  }
+
+  .research-branch {
+    flex: 1;
+    border: 1px solid rgba(128, 128, 128, 0.2);
+    border-radius: 4px;
+    padding: 16px;
+  }
+
+  .branch-type {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  .branch-venue {
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+  }
+
+  .branch-meta {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  .branch-authors {
+    font-size: 0.82rem;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .branch-link {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .branch-link:hover {
+    text-decoration: underline;
+  }
