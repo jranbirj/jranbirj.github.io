@@ -79,6 +79,176 @@
     margin-bottom: 20px;
   }
   
+  /* Post previews on writing.html */
+  .post-list {
+    margin-top: 40px;
+  }
+
+  .post-preview {
+    display: block;
+    text-decoration: none;
+    color: var(--text);
+    padding: 24px 0;
+    border-bottom: 1px solid var(--muted);
+    transition: opacity 0.2s ease;
+  }
+
+  .post-preview:first-child {
+    border-top: 1px solid var(--muted);
+  }
+
+  .post-preview:hover {
+    opacity: 0.7;
+  }
+
+  .post-preview h2 {
+    margin: 0 0 6px;
+    font-size: 1.3rem;
+    font-weight: 600;
+  }
+
+  .post-preview .post-date {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin: 0 0 8px;
+  }
+
+  .post-preview .post-excerpt {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--muted);
+  }
+
+  /* Full post page */
+  .post-meta {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 32px;
+  }
+
+  .post-content p {
+    margin-bottom: 20px;
+  }
+
+  /* Notebook cells */
+  .nb-cell {
+    margin: 28px 0;
+    border: 1px solid var(--muted);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .nb-cell-label {
+    font-size: 0.75rem;
+    font-family: monospace;
+    color: var(--muted);
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--muted);
+    background: rgba(128, 128, 128, 0.06);
+  }
+
+  .nb-cell pre[class*="language-"] {
+    margin: 0;
+    border-radius: 0;
+    font-size: 0.88rem;
+  }
+
+  .nb-output {
+    padding: 12px 16px;
+    font-family: monospace;
+    font-size: 0.85rem;
+    white-space: pre-wrap;
+    background: rgba(128, 128, 128, 0.06);
+    color: var(--text);
+    border-top: 1px solid var(--muted);
+  }
+
+  .nb-output img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 4px 0;
+  }
+
+
+  /* Project cards */
+  .project-list {
+    margin-top: 40px;
+  }
+
+  .project-card {
+    padding: 24px 0;
+    border-bottom: 1px solid var(--muted);
+  }
+
+  .project-card:first-child {
+    border-top: 1px solid var(--muted);
+  }
+
+  .project-card h2 {
+    margin: 0 0 8px;
+    font-size: 1.3rem;
+    font-weight: 600;
+  }
+
+  .project-card p {
+    margin: 0 0 16px;
+    font-size: 0.95rem;
+    color: var(--muted);
+  }
+
+  .project-link {
+    display: inline-block;
+    font-size: 0.85rem;
+    color: var(--accent);
+    text-decoration: none;
+    border: 1px solid var(--accent);
+    padding: 6px 14px;
+    border-radius: 4px;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  .project-link:hover {
+    background: var(--accent);
+    color: var(--bg);
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-top: 48px;
+    font-size: 0.9rem;
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .back-link:hover {
+    text-decoration: underline;
+  }
+
+  /* Tables */
+  .post-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 0.92rem;
+  }
+
+  .post-content th,
+  .post-content td {
+    text-align: left;
+    padding: 10px 14px;
+    border: 1px solid var(--muted);
+  }
+
+  .post-content th {
+    background: rgba(128, 128, 128, 0.1);
+    font-weight: 600;
+  }
+
+  .post-content tr:nth-child(even) td {
+    background: rgba(128, 128, 128, 0.04);
+  }
+
   footer {
     margin-top: 80px;
     font-size: 0.85rem;
