@@ -258,6 +258,37 @@
     color: var(--muted);
   }
 
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 6px 0 10px;
+  }
+
+  .post-tag {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 2px 8px;
+    border-radius: 3px;
+    border: 1px solid transparent;
+    color: var(--muted);
+  }
+
+  /* Type tags */
+  .post-tag--short-notes    { background: rgba(251, 191, 36, 0.1);  border-color: rgba(251, 191, 36, 0.45); }
+  .post-tag--reflections    { background: rgba(251, 113, 133, 0.1); border-color: rgba(251, 113, 133, 0.4); }
+  .post-tag--technicals     { background: rgba(56, 189, 248, 0.1);  border-color: rgba(56, 189, 248, 0.4); }
+  .post-tag--guide          { background: rgba(52, 211, 153, 0.1);  border-color: rgba(52, 211, 153, 0.4); }
+  .post-tag--full-form      { background: rgba(129, 140, 248, 0.1); border-color: rgba(129, 140, 248, 0.4); }
+
+  /* Topic tags */
+  .post-tag--ai-ml          { background: rgba(132, 204, 22, 0.1);  border-color: rgba(132, 204, 22, 0.45); }
+  .post-tag--data-science   { background: rgba(96, 165, 250, 0.1);  border-color: rgba(96, 165, 250, 0.4); }
+  .post-tag--data-eng       { background: rgba(251, 146, 60, 0.1);  border-color: rgba(251, 146, 60, 0.4); }
+  .post-tag--math-stats     { background: rgba(45, 212, 191, 0.1);  border-color: rgba(45, 212, 191, 0.4); }
+
   /* Full post page */
   .post-meta {
     font-size: 0.85rem;
