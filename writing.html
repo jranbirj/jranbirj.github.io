@@ -8,11 +8,10 @@
 </head>
 
 <body>
-
   <div class="container">
-
     <nav>
       <a href="index.html">Home</a>
+      <a href="background.html">Background</a>
       <a href="research.html">Research</a>
       <a href="projects.html">Projects</a>
       <a href="writing.html">Writing</a>
@@ -21,12 +20,72 @@
       </button>
     </nav>
 
-    <header>
+    <header class="writing-header">
       <h1>Writing</h1>
+      <div class="header-actions">
+
+        <div class="filter-wrap">
+          <button class="tag-legend-btn" id="filter-toggle" aria-label="Filter posts">Filter ↓</button>
+          <div class="filter-dropdown" id="filter-dropdown" hidden>
+            <div class="legend-section">
+              <div class="legend-heading">Format</div>
+              <div class="filter-chip-group">
+                <button class="filter-chip post-tag post-tag--short-notes"  data-filter="short-notes">Short Notes</button>
+                <button class="filter-chip post-tag post-tag--reflections"  data-filter="reflections">Reflections</button>
+                <button class="filter-chip post-tag post-tag--technicals"   data-filter="technicals">Technicals</button>
+                <button class="filter-chip post-tag post-tag--guide"        data-filter="guide">Guide</button>
+                <button class="filter-chip post-tag post-tag--full-form"    data-filter="full-form">Full-form</button>
+              </div>
+            </div>
+            <div class="legend-divider"></div>
+            <div class="legend-section">
+              <div class="legend-heading">Topic</div>
+              <div class="filter-chip-group">
+                <button class="filter-chip post-tag post-tag--ai-ml"        data-filter="ai-ml">AI & ML</button>
+                <button class="filter-chip post-tag post-tag--data-science" data-filter="data-science">Data Science</button>
+                <button class="filter-chip post-tag post-tag--data-eng"     data-filter="data-eng">Data Engineering</button>
+                <button class="filter-chip post-tag post-tag--math-stats"   data-filter="math-stats">Math & Stats</button>
+              </div>
+            </div>
+            <div class="filter-dropdown-footer">
+              <button class="filter-reset" id="filter-reset">✕ Reset</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tag-legend-wrap">
+          <button class="tag-legend-btn" id="legend-toggle" aria-label="Tag legend">Tags ↓</button>
+          <div class="tag-legend" id="tag-legend" hidden>
+
+            <div class="legend-section">
+              <div class="legend-heading">Format</div>
+              <div class="legend-row"><span class="post-tag post-tag--short-notes">Short Notes</span><span class="legend-desc">Brief, focused posts</span></div>
+              <div class="legend-row"><span class="post-tag post-tag--reflections">Reflections</span><span class="legend-desc">Personal essays & thoughts</span></div>
+              <div class="legend-row"><span class="post-tag post-tag--technicals">Technicals</span><span class="legend-desc">Technical deep-dives</span></div>
+              <div class="legend-row"><span class="post-tag post-tag--guide">Guide</span><span class="legend-desc">Step-by-step walkthroughs</span></div>
+              <div class="legend-row"><span class="post-tag post-tag--full-form">Full-form</span><span class="legend-desc">Long-form essays</span></div>
+            </div>
+
+            <div class="legend-divider"></div>
+
+            <div class="legend-section">
+              <div class="legend-heading">Topic</div>
+              <div class="legend-row"><span class="post-tag post-tag--ai-ml">AI & Machine Learning</span><span class="legend-desc">ML/AI content</span></div>
+              <div class="legend-row"><span class="post-tag post-tag--data-science">Data Science</span><span class="legend-desc">Data science topics</span></div>
+              <div class="legend-row"><span class="post-tag post-tag--data-eng">Data Engineering</span><span class="legend-desc">Pipelines & infrastructure</span></div>
+              <div class="legend-row"><span class="post-tag post-tag--math-stats">Math & Statistics</span><span class="legend-desc">Mathematical concepts</span></div>
+            </div>
+
+          </div>
+        </div>
+
+        <button class="sort-btn" id="sort-date">Date ↓</button>
+
+      </div>
     </header>
 
     <section class="post-list">
-      <a href="posts/bias-abstract-spaces.html" class="post-preview">
+      <a href="posts/bias-abstract-spaces.html" class="post-preview" data-tags="technicals,ai-ml" data-date="2026-03-08">
         <h2>Bias in Abstract Spaces: Exploring Social Stereotypes in Word Embeddings</h2>
         <p class="post-date">March 8, 2026</p>
         <div class="post-tags">
@@ -35,6 +94,7 @@
         </div>
         <p class="post-excerpt">"A model is only as good as its training corpora" - an exploration into GloVe word embedding models.</p>
       </a>
+      <p id="no-results" hidden>No posts match the selected filters. </p>
     </section>
 
     <footer>
