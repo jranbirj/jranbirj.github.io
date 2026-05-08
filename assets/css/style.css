@@ -56,6 +56,14 @@
     margin-left: 20px;
     color: var(--text);
     transition: transform 0.2s ease, color 0.2s ease;
+    display: flex;
+    align-items: center;
+  }
+
+  .theme-icon {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
   }
   
   .theme-btn:hover {
@@ -531,6 +539,14 @@
     border-top: 1px solid var(--muted);
   }
 
+  figcaption {
+    text-align: center;
+  }
+
+  figcaption a {
+    color: var(--text);
+  }
+
   .nb-output img {
     max-width: 100%;
     height: auto;
@@ -542,27 +558,119 @@
   /* Project cards */
   .project-list {
     margin-top: 40px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
   }
 
   .project-card {
-    padding: 24px 0;
-    border-bottom: 1px solid var(--muted);
+    border: 1px solid rgba(128, 128, 128, 0.2);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
 
-  .project-card:first-child {
-    border-top: 1px solid var(--muted);
+  .project-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   }
 
-  .project-card h2 {
-    margin: 0 0 8px;
-    font-size: 1.3rem;
+  body.dark .project-card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  }
+
+  .project-card-img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+  }
+
+  .project-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .project-card-body {
+    padding: 20px;
+  }
+
+  .project-card-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .project-title {
+    margin: 0;
+    font-size: 1.05rem;
     font-weight: 600;
   }
 
-  .project-card p {
-    margin: 0 0 16px;
-    font-size: 0.95rem;
+  .project-year {
+    font-size: 0.8rem;
     color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .project-desc {
+    margin: 0 0 16px;
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  .project-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .project-tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .project-tech-tag {
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 2px 7px;
+    border-radius: 3px;
+    border: 1px solid rgba(128, 128, 128, 0.25);
+    color: var(--muted);
+  }
+
+  .project-links {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+
+  .project-gh-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.82rem;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .project-gh-link svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+  }
+
+  .project-gh-link:hover {
+    color: var(--text);
   }
 
   .project-link {
@@ -650,6 +758,7 @@
   .timeline {
     position: relative;
     padding-left: 40px;
+    margin-bottom: 65px;
   }
 
   .timeline::before {
@@ -666,6 +775,10 @@
   .timeline-item {
     position: relative;
     margin-bottom: 36px;
+  }
+
+  .timeline-item:last-child {
+    margin-bottom: 0;
   }
 
   .timeline-item::before {
@@ -724,8 +837,8 @@
 
   /* Skills section */
   .skills {
-    margin-top: 8px;
-    margin-bottom: 48px;
+    margin-top: 0;
+    margin-bottom: 60px;
   }
 
   .skill-group {
@@ -805,10 +918,35 @@
     border-color: rgba(139, 92, 246, 0.7);
   }
 
+  /* Nested research inside experience */
+  .exp-research {
+    margin-top: 14px;
+  }
+
+  .talk-list--borderless .talk-item,
+  .talk-list--borderless .talk-item:first-child {
+    border: none;
+    padding-top: 0;
+  }
+
+  .talk-list--borderless {
+    margin-bottom: 20px;
+  }
+
+  .exp-bullets {
+    margin: 8px 0 0;
+    padding-left: 18px;
+    line-height: 1.6;
+  }
+
+  .exp-bullets li {
+    margin-bottom: 6px;
+  }
+
   /* Talks & Publications */
   .talk-list {
     margin-top: 8px;
-    margin-bottom: 48px;
+    margin-bottom: 30px;
   }
 
   .talk-item {
@@ -842,108 +980,45 @@
     font-size: 0.9rem;
     color: var(--muted);
   }
-
-  .talk-link {
-    display: inline-block;
-    margin-top: 8px;
-    font-size: 0.85rem;
-    color: var(--accent);
-    text-decoration: none;
-  }
-
-  .talk-link:hover {
-    text-decoration: underline;
-  }
-
-  /* Research tree */
-  .research-section {
-    margin-bottom: 48px;
-  }
-
-  .research-item {
+  
+  /* Blogroll */
+  .blogroll-group {
     margin-bottom: 40px;
   }
 
-  .research-root {
-    border: 1px solid rgba(128, 128, 128, 0.25);
-    border-radius: 4px;
-    padding: 16px 24px;
-    text-align: center;
-  }
-
-  .research-title {
-    font-size: 1rem;
-    font-weight: 600;
-  }
-
-  .tree-connector {
-    display: flex;
-    gap: 16px;
-    height: 32px;
-  }
-
-  .tree-arm--left {
-    flex: 1;
-    border-right: 2px solid rgba(128, 128, 128, 0.3);
-    border-bottom: 2px solid rgba(128, 128, 128, 0.3);
-    border-bottom-right-radius: 12px;
-  }
-
-  .tree-arm--right {
-    flex: 1;
-    border-left: 2px solid rgba(128, 128, 128, 0.3);
-    border-bottom: 2px solid rgba(128, 128, 128, 0.3);
-    border-bottom-left-radius: 12px;
-  }
-
-  .research-branches {
-    display: flex;
-    gap: 16px;
-  }
-
-  .research-branch {
-    flex: 1;
-    border: 1px solid rgba(128, 128, 128, 0.2);
-    border-radius: 4px;
-    padding: 16px;
-  }
-
-  .branch-type {
-    font-size: 0.7rem;
+  .blogroll-heading {
+    font-size: 0.72rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: var(--accent);
-    margin-bottom: 6px;
-  }
-
-  .branch-venue {
-    font-size: 0.9rem;
-    margin-bottom: 4px;
-  }
-
-  .branch-meta {
-    font-size: 0.8rem;
     color: var(--muted);
-    margin-bottom: 4px;
+    margin-bottom: 12px;
   }
 
-  .branch-authors {
-    font-size: 0.82rem;
+  .blogroll-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .blogroll-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.15);
+    font-size: 0.95rem;
     color: var(--muted);
-    font-style: italic;
   }
 
-  .branch-link {
-    display: inline-block;
-    margin-top: 8px;
-    font-size: 0.85rem;
-    color: var(--accent);
+  .blogroll-list li:first-child {
+    border-top: 1px solid rgba(128, 128, 128, 0.15);
+  }
+
+  .blogroll-link {
+    color: var(--text);
     text-decoration: none;
   }
 
-  .branch-link:hover {
-    text-decoration: underline;
+  .blogroll-link:hover {
+    color: var(--accent);
   }
 
   /* Reach out section */
