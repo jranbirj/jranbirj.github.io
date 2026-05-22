@@ -23,6 +23,8 @@
       </button>
     </nav>
 
+    <nav class="toc-sidebar" id="toc-sidebar" aria-label="Table of contents"></nav>
+
     <article>
       <header>
         <h1>Bias in Abstract Spaces: Exploring Social Stereotypes in Word Embeddings</h1>
@@ -81,7 +83,7 @@ Each word is represented by a vector of 300 numbers</div>
           </div>
         
           <hr>
-          <h2>Part 1: What Embeddings Can Do &mdash; Analogies and Similarity</h2>
+          <h2 data-toc="Embeddings &mdash; Analogies and Similarity">Part 1: What Embeddings Can Do &mdash; Analogies and Similarity</h2>
           <p> Before investigating bias, it's important to understand some of the ways in which embeddings are useful.<br><br>
             One way we can use embedding is for vector arithmetic (and coming up with analogies). Embeddings can encode semantic relationships in the form of direction, which means we can manipulate those directions. We can create a "gender" direction for instance, that allows us to transform a male-coded word to its female counterpart.<br><br>
             Another way to use it would be for cosine similarity, where we measure the angle between two vectors to determine proximity / semantic similarity. </p>
@@ -128,7 +130,7 @@ print(model.similarity("brilliant", "man"))</code></pre>
         </div>
 
         <hr>
-        <h2>Part 2: Bias in Embeddings — Gender and Profession</h2>
+        <h2 data-toc="Bias in Embeddings">Part 2: Bias in Embeddings — Gender and Profession</h2>
         <p>A key finding in NLP (Bolukbasi et al., 2016, <em>"Man is to Computer Programmer as Woman is to Homemaker?"</em>) showed that word embeddings encode real-world gender stereotypes.</p>
         <p>I decided to look further into this by projecting each profession word onto a gender direction vector defined as <code>woman − man</code>. A positive score is more associated with <code>woman</code>, while a negative one is more associated with <code>man</code>. The magnitude reflects the strength of association.</p>
 
@@ -209,7 +211,7 @@ plt.show()</code></pre>
         </div>
 
         <hr>
-        <h2>Part 3: Nationality Associations</h2>
+        <h2 data-toc="Nationality Associations">Part 3: Nationality Associations</h2>
         <p>Shifting from gender to nationality, I wanted to see what associations does embedding geometry encode around national identities. Using cosine similarity, I first tested with a single word (<code>"intelligent"</code>) between nationality and intelligence.</p>
         <p>Most of the nationalities had an intelligence score close to zero, although the corpus may have had more about americans with relation to contexts of intelligence. It is possible that the model was encoding those uneven frequency patterns. It may not necessarily indicate that one group is the "most" intelligent with heavy magnitude, but it is interesting to see the variances in the magnitude. Single-probe scores (<code>"intelligent"</code>) show wider variance — <code>nigerian</code> sits noticeably lower than others, while <code>american</code> and <code>chinese</code> score highest.</p>
 
@@ -320,7 +322,7 @@ plt.show()</code></pre>
 </div>
 
         <hr>
-        <h2>Part 4: Religion-Based Bias</h2>
+        <h2 data-toc="Religion-Based Bias">Part 4: Religion-Based Bias</h2>
 <p>The final aspect I wanted to look at was religion-based bias in word embeddings. Religion tends to be a fairly contentious topic (as well as how religion is reported). I wanted to see how religious identity is encoded in embedding spaces and their connotations with positive/negative traits, which could give an idea of the bias baked in the training corpora.</p>
 <p>The results that came out from running model similarity showed a striking and uneven distribution of associations across religions. The most significant finding is muslim, which scores highest on radical (0.4295), terrorist (0.3606), and violent (0.3540) by margins that exceed other religions. This isn't a subtle statistical difference, the gap is very large enough that it could have a substantial influence in downstream applications. Those scores start to hit moderate association territory.</p>
 <p>What makes this even more complex is that muslim also scores the highest on peaceful, tolerant, and educated. There seems to be a dual nature of how Islam is discussed in the corpora. The embedding absorbs both and collapses them into a single vector, which results in it being unable to separate context (once again, a static embedding problem re-arises).</p>
@@ -380,7 +382,7 @@ terrorist
 </div>
 
         <hr>
-        <h2>Conclusion: Critical Analysis and Limitations</h2>
+        <h2 data-toc="Conclusions">Conclusion: Critical Analysis and Limitations</h2>
 <p>Across three dimensions of analysis, GloVe embeddings consistently encode social stereotypes present in their training corpus.</p>
 <p>With regards to <strong>Gender</strong>, Female-coded occupations (nurse, homemaker) are encoded with far stronger magnitude than male-coded ones, reflecting how gendered language is marked in English text. More strikingly, non-binary identities are absent from the vocabulary entirely (bias by omission rather than misrepresentation).</p>
 <p>In <strong>Nationality</strong>, the embedding space reflects corpus composition more than cultural reality. American tops nearly every category regardless of whether traits are positive or negative due to frequency. Korean scores low on education despite South Korea's high literacy rates, likely contaminated by North Korea coverage in the same vector. Nigerian scores highest on "corrupt", the one case where a stereotyped negative association could be appearing most directly.</p>
