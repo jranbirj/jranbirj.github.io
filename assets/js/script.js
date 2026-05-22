@@ -112,14 +112,17 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // Table of contents sidebar
+    // Table of contents sidebar + mobile dropdown
     const tocSidebar = document.getElementById('toc-sidebar');
     if (tocSidebar) {
       const headings = document.querySelectorAll('article h2');
       if (headings.length) {
+        // Assign IDs
+        headings.forEach((h, i) => { if (!h.id) h.id = 'section-' + i; });
+
+        // Build sidebar
         const ul = document.createElement('ul');
-        headings.forEach((h, i) => {
-          if (!h.id) h.id = 'section-' + i;
+        headings.forEach(h => {
           const li = document.createElement('li');
           const a = document.createElement('a');
           a.href = '#' + h.id;
@@ -129,6 +132,33 @@ document.addEventListener("DOMContentLoaded", () => {
           ul.appendChild(li);
         });
         tocSidebar.appendChild(ul);
+
+        // Build mobile dropdown
+        const mobile = document.createElement('div');
+        mobile.className = 'toc-mobile';
+        const btn = document.createElement('button');
+        btn.className = 'toc-mobile-btn';
+        btn.textContent = 'Jump to section ↓';
+        const list = document.createElement('ul');
+        list.className = 'toc-mobile-list';
+        list.hidden = true;
+        headings.forEach(h => {
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+          a.href = '#' + h.id;
+          a.textContent = h.dataset.toc || h.textContent;
+          a.addEventListener('click', () => { list.hidden = true; btn.textContent = 'Jump to section ↓'; });
+          li.appendChild(a);
+          list.appendChild(li);
+        });
+        btn.addEventListener('click', () => {
+          list.hidden = !list.hidden;
+          btn.textContent = list.hidden ? 'Jump to section ↓' : 'Jump to section ↑';
+        });
+        mobile.appendChild(btn);
+        mobile.appendChild(list);
+        const article = document.querySelector('article');
+        if (article) article.insertAdjacentElement('beforebegin', mobile);
 
         // Highlight active section on scroll
         const tocLinks = tocSidebar.querySelectorAll('a');
