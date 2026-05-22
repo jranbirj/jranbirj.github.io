@@ -114,6 +114,19 @@
     display: block;
   }
 
+  @media (max-width: 640px) {
+    .index-layout {
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .index-photo img {
+      width: 100%;
+      height: 260px;
+      object-position: center 20%;
+    }
+  }
+
   /* Post previews on writing.html */
   .post-list {
     margin-top: 40px;
@@ -558,6 +571,52 @@
 
   .toc-sidebar a:hover,
   .toc-sidebar a.toc-active {
+    color: var(--accent);
+  }
+
+  /* TOC mobile dropdown */
+  .toc-mobile {
+    display: none;
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 1379px) {
+    .toc-mobile { display: block; }
+  }
+
+  .toc-mobile-btn {
+    background: none;
+    border: 1px solid rgba(128,128,128,0.3);
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    color: var(--muted);
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .toc-mobile-btn:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .toc-mobile-list {
+    list-style: none;
+    margin: 8px 0 0;
+    padding: 0;
+    border-left: 2px solid rgba(128,128,128,0.2);
+  }
+
+  .toc-mobile-list li a {
+    display: block;
+    padding: 5px 12px;
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .toc-mobile-list li a:hover {
     color: var(--accent);
   }
 
