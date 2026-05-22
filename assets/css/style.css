@@ -86,7 +86,34 @@
   .about p {
     margin-bottom: 20px;
   }
-  
+
+  .index-layout {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 40px;
+    max-width: 900px;
+    margin-top: -20px;
+  }
+
+  .index-text {
+    flex: 1;
+    max-width: 520px;
+  }
+
+  .index-photo {
+    flex-shrink: 0;
+  }
+
+  .index-photo img {
+    width: 300px;
+    height: 380px;
+    object-fit: cover;
+    object-position: center top;
+    border-radius: 8px;
+    display: block;
+  }
+
   /* Post previews on writing.html */
   .post-list {
     margin-top: 40px;
