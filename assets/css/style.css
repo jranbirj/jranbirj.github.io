@@ -522,6 +522,45 @@
   .post-tag--data-eng       { background: rgba(251, 146, 60, 0.1);  border-color: rgba(251, 146, 60, 0.4); }
   .post-tag--math-stats     { background: rgba(45, 212, 191, 0.1);  border-color: rgba(45, 212, 191, 0.4); }
 
+  /* Table of contents sidebar */
+  .toc-sidebar {
+    position: fixed;
+    top: 140px;
+    right: calc((100vw - 1000px) / 2 - 220px);
+    width: 160px;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    display: none;
+  }
+
+  @media (min-width: 1380px) {
+    .toc-sidebar { display: block; }
+  }
+
+  .toc-sidebar ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-left: 2px solid rgba(128,128,128,0.2);
+  }
+
+  .toc-sidebar li {
+    margin: 0;
+  }
+
+  .toc-sidebar a {
+    display: block;
+    padding: 4px 10px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .toc-sidebar a:hover,
+  .toc-sidebar a.toc-active {
+    color: var(--accent);
+  }
+
   /* Full post page */
   .post-meta {
     font-size: 0.85rem;
