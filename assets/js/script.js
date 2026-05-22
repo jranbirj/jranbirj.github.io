@@ -112,6 +112,39 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
+    // Table of contents sidebar
+    const tocSidebar = document.getElementById('toc-sidebar');
+    if (tocSidebar) {
+      const headings = document.querySelectorAll('article h2');
+      if (headings.length) {
+        const ul = document.createElement('ul');
+        headings.forEach((h, i) => {
+          if (!h.id) h.id = 'section-' + i;
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+          a.href = '#' + h.id;
+          a.textContent = h.dataset.toc || h.textContent;
+          a.dataset.target = h.id;
+          li.appendChild(a);
+          ul.appendChild(li);
+        });
+        tocSidebar.appendChild(ul);
+
+        // Highlight active section on scroll
+        const tocLinks = tocSidebar.querySelectorAll('a');
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              tocLinks.forEach(a => a.classList.remove('toc-active'));
+              const active = tocSidebar.querySelector(`a[data-target="${entry.target.id}"]`);
+              if (active) active.classList.add('toc-active');
+            }
+          });
+        }, { rootMargin: '0px 0px -60% 0px' });
+        headings.forEach(h => observer.observe(h));
+      }
+    }
+
     // Tag legend toggle
     const legendBtn = document.getElementById("legend-toggle");
     const legendPanel = document.getElementById("tag-legend");
